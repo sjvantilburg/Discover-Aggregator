@@ -1,4 +1,4 @@
-#test
+
 """
 Steps to write this program
 
@@ -14,7 +14,7 @@ Steps to write this program
 """
 
 
-#####3 Birdy song list
+#####Connect to the spotify client
 import spotipy
 import sys
 from spotipy.oauth2 import SpotifyClientCredentials
