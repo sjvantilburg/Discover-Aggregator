@@ -13,26 +13,38 @@ Steps to write this program
 
 """
 
+#####
 
-#####Connect to the spotify client
+
 import spotipy
-import sys
+
 from spotipy.oauth2 import SpotifyClientCredentials
 
 clientID = '2f6d5f7facc640bf984f39313fdf4342'
 clientsecret = 'f95c221e551c4d558be4733b49b04483'
-
+username = '129270258'
+redirect_uri = 'http://localhost:8888'
 
 client_credentials_manager = SpotifyClientCredentials(clientID,clientsecret)
 spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-if len(sys.argv) > 1:
-    name = ' '.join(sys.argv[1:])
-else:
-    name = 'Radiohead'
+scope = 'user-library-read playlist-modify-private user-library-modify playlist-modify-public'
+token = spotipy.util.prompt_for_user_token(username,
+                           scope,
+                           clientID,
+                           clientsecret,
+                           redirect_uri)
 
-results = spotify.search(q='artist:' + name, type='artist')
-items = results['artists']['items']
-if len(items) > 0:
-    artist = items[0]
-    print(artist['name'], artist['images'][0]['url'])
+
+
+token
+
+if token:
+    sp = spotipy.Spotify(auth=token)
+else:
+    print("Can't get token for", username)
+
+
+
+spotify.current_user()
+#spotify.artist_albums(artist_id, album_type=None, country=None, limit=20, offset=0)
