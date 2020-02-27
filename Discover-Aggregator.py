@@ -17,34 +17,52 @@ Steps to write this program
 
 
 import spotipy
-
+import json
 from spotipy.oauth2 import SpotifyClientCredentials
 
-clientID = '2f6d5f7facc640bf984f39313fdf4342'
-clientsecret = 'f95c221e551c4d558be4733b49b04483'
-username = '129270258'
+
+
+with open('key.json', 'rb') as f:
+        keychain = json.load(f)
+        clientID = keychain['clientID']
+        clientsecret = keychain['clientsecret']
+        username = keychain['username']
+        
 redirect_uri = 'http://localhost:8888'
+
+
+'''
+1. Connect to the spotify client
+'''
+
 
 client_credentials_manager = SpotifyClientCredentials(clientID,clientsecret)
 spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-scope = 'user-library-read playlist-modify-private user-library-modify playlist-modify-public'
+scope = 'user-modify-playback-state user-read-playback-state user-read-currently-playing user-top-read user-read-recently-played user-library-modify user-library-read user-follow-modify user-follow-read playlist-read-private playlist-modify-public playlist-modify-private playlist-read-collaborative user-read-private user-read-email app-remote-control'
 token = spotipy.util.prompt_for_user_token(username,
                            scope,
                            clientID,
                            clientsecret,
                            redirect_uri)
 
-
-
-token
-
+#Check
 if token:
     sp = spotipy.Spotify(auth=token)
 else:
     print("Can't get token for", username)
 
+'''
+2. Find my saved songs
+'''
+seasonal_playlist = 'Winter 2020'
 
 
-spotify.current_user()
-#spotify.artist_albums(artist_id, album_type=None, country=None, limit=20, offset=0)
+
+
+spotify.user_playlists(username, limit = 1, offset=0)
+    
+
+
+spotify.current_user_saved_tracks(limit = 10)
+#
