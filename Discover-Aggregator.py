@@ -20,11 +20,6 @@ import spotipy
 import json
 from spotipy.oauth2 import SpotifyClientCredentials
 
-<<<<<<< HEAD
-clientID = '#'
-clientsecret = '#'
-=======
-
 
 with open('key.json', 'rb') as f:
         keychain = json.load(f)
@@ -38,7 +33,6 @@ redirect_uri = 'http://localhost:8888'
 '''
 1. Connect to the spotify client
 '''
->>>>>>> like_mover
 
 
 client_credentials_manager = SpotifyClientCredentials(clientID,clientsecret)
