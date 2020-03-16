@@ -19,6 +19,7 @@ Steps to write this program
 import spotipy
 import json
 from spotipy.oauth2 import SpotifyClientCredentials
+import datetime
 
 
 with open('key.json', 'rb') as f:
@@ -54,14 +55,64 @@ else:
 '''
 2. Find my saved songs
 '''
-seasonal_playlist = 'Winter 2020'
+#Get all users playlists
+playlists = sp.user_playlists(username, limit = 50, offset=0)
+
+
+#check target playlist season
+
+
+#target playlist to add songs into
+target_playlist_name = 'Winter 2020'
+target_playlist_uri = ''
+#get target playlist uri
+for i in range(0,len(playlists['items'])):
+    if playlists['items'][i]['name'] == target_playlist_name:
+        target_playlist_uri = playlists['items'][i]['uri']
+
+#find saved songs
+liked_songs = sp.current_user_saved_tracks(limit=50)
+
+
+def convert_spotify_date(dte):
+    return datetime.datetime.strptime(dte,"%Y-%m-%dT%H:%M:%SZ")
+
+
+#Collect recent songs
+year = datetime.datetime.now().year
+spring_start = datetime.datetime.strptime(str(year)+'-03-01T00:00:00Z',"%Y-%m-%dT%H:%M:%SZ")
+summer_start = datetime.datetime.strptime(str(year)+'-06-01T00:00:00Z',"%Y-%m-%dT%H:%M:%SZ")
+fall_start = datetime.datetime.strptime(str(year)+'-09-01T00:00:00Z',"%Y-%m-%dT%H:%M:%SZ")
+winter_start = datetime.datetime.strptime(str(year)+'-12-01T00:00:00Z',"%Y-%m-%dT%H:%M:%SZ")
+last_winter_start = datetime.datetime.strptime(str(year-1)+'-12-01T00:00:00Z',"%Y-%m-%dT%H:%M:%SZ")
+
+song_collection = []
+
+for i in range(0, len(liked_songs['items'])):
+    if (convert_spotify_date(liked_songs['items'][i]['added_at']).date() > last_winter_start.date()):
+        song_collection.append(liked_songs['items'][i]['track']['uri'])
+
+
+
+#Add collection to playlist
+
+sp.user_playlist_add_tracks(username, target_playlist_uri, song_collection)     
+
+
+
+# It worked!
+## Need to remove duplicates 
 
 
 
 
-spotify.user_playlists(username, limit = 1, offset=0)
-    
 
 
-spotify.current_user_saved_tracks(limit = 10)
-#
+
+
+
+
+
+
+
+
