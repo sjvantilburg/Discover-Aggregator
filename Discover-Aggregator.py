@@ -111,7 +111,7 @@ target_playlist_tracks = sp.playlist_tracks(target_playlist_uri)
 
 #Add collection to playlist
 
-sp.user_playlist_add_tracks(username, target_playlist_uri, song_collection)     # It worked!
+#sp.user_playlist_add_tracks(username, target_playlist_uri, song_collection)     # It worked!
 
 
 
@@ -131,7 +131,7 @@ for i in range(0, len(target_playlist_tracks['items'])-1):
         if target_playlist_tracks['items'][i]['track']['uri'] == target_playlist_tracks['items'][j+i]['track']['uri']:
             uri = target_playlist_tracks['items'][i]['track']['uri'].rsplit(':',1)
             track_positions['uri'] = uri[-1]
-            track_positions['positions']= [i+j]
+            track_positions['positions']= i+j
             print(track_positions)
             #sp.user_playlist_remove_specific_occurrences_of_tracks(username, 
              #                                                      target_playlist_tracks, 
@@ -141,9 +141,15 @@ for i in range(0, len(target_playlist_tracks['items'])-1):
     #print(temp_positions)            
 print(track_list_to_be_deleted)        
             
+track_list_to_be_deleted = [str(i) for i in track_list_to_be_deleted]
 
-sp.user_playlist_remove_specific_occurrences_of_tracks(username, target_playlist_tracks, track_list_to_be_deleted)
+target_playlist_tracks['href'] = str(target_playlist_tracks['href'])
 
+target_playlist_tracks
+
+sp.user_playlist_remove_specific_occurrences_of_tracks(username, target_playlist_uri, track_list_to_be_deleted)
+
+target_playlist_tracks
 
 #remove_duplicate_songs(username, target_playlist)
 {'uri': 'spotify:track:70o9lZxBe86XLvQCywNdJ9', 'positions': [8]}
