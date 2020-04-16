@@ -65,10 +65,10 @@ playlists = sp.user_playlists(username, limit = 50, offset=0)
 #find saved songs
 liked_songs = sp.current_user_saved_tracks(limit=50)
 
+
 #Collect recent songs
 def convert_spotify_date(dte):
     return datetime.datetime.strptime(dte,"%Y-%m-%dT%H:%M:%SZ")
-
 
 year = datetime.datetime.now().year
 spring_start = datetime.datetime.strptime(str(year)+'-03-01T00:00:00Z',"%Y-%m-%dT%H:%M:%SZ")
@@ -80,17 +80,15 @@ last_winter_start = datetime.datetime.strptime(str(year-1)+'-12-01T00:00:00Z',"%
 song_collection = []
 
 for i in range(0, len(liked_songs['items'])):
-    if (convert_spotify_date(liked_songs['items'][i]['added_at']).date() > last_winter_start.date()):
+    if (convert_spotify_date(liked_songs['items'][i]['added_at']).date() > spring_start.date()):
         song_collection.append(liked_songs['items'][i]['track']['uri'])
-
-print(song_collection)
 
 ####################################################################################
 ''' 3. Find the target playlist '''
 
 
 #target playlist to add songs into
-target_playlist_name = 'Winter 2020 (2)'
+target_playlist_name = 'Spring 2020'
 target_playlist_uri = ''
 
 #get target playlist uri
@@ -100,9 +98,17 @@ for i in range(0,len(playlists['items'])):
 
 #Get target playlist tracks
 target_playlist_tracks = sp.playlist_tracks(target_playlist_uri)
+listof_target_playlist_tracks = []
+for i in range(0, len(target_playlist_tracks['items'])):
+    listof_target_playlist_tracks.append(target_playlist_tracks['items'][i]['track']['uri'])
 
 
 
+###########################
+### I don't really need to remove the duplicates. I just need to make sure that I add the correct ones. 
+### I can do this through the 'in' feature of python
+
+songs_to_add = [i for i in song_collection if i not in listof_target_playlist_tracks]
 
 
 
@@ -110,53 +116,13 @@ target_playlist_tracks = sp.playlist_tracks(target_playlist_uri)
 ''' 4. Add new songs to playlist '''
 
 #Add collection to playlist
-
-#sp.user_playlist_add_tracks(username, target_playlist_uri, song_collection)     # It worked!
-
-
-
-
-
-#######################################################################################3
-''' 5. Remove duplicates from target playlist '''
-
-#def remove_duplicate_songs(usernme, playlist):
-    #find the dupes
-track_positions = {}
-track_list_to_be_deleted = []
-for i in range(0, len(target_playlist_tracks['items'])-1):
-    print ('i is ' + str(i))
-    for j in range(1, len(target_playlist_tracks['items'])-i):
-        print('j is '+str(j))
-        if target_playlist_tracks['items'][i]['track']['uri'] == target_playlist_tracks['items'][j+i]['track']['uri']:
-            uri = target_playlist_tracks['items'][i]['track']['uri'].rsplit(':',1)
-            track_positions['uri'] = uri[-1]
-            track_positions['positions']= i+j
-            print(track_positions)
-            #sp.user_playlist_remove_specific_occurrences_of_tracks(username, 
-             #                                                      target_playlist_tracks, 
-              #                                                   str(track_positions))
-            track_list_to_be_deleted.append(track_positions.copy())
+if len(songs_to_add) > 0:
+    sp.user_playlist_add_tracks(username, target_playlist_uri, songs_to_add)     # It worked!
+    print('added: '.join(songs_to_add))
     
-    #print(temp_positions)            
-print(track_list_to_be_deleted)        
-            
-track_list_to_be_deleted = [str(i) for i in track_list_to_be_deleted]
+else:
+    print("Added no songs")
 
-target_playlist_tracks['href'] = str(target_playlist_tracks['href'])
-
-target_playlist_tracks
-
-sp.user_playlist_remove_specific_occurrences_of_tracks(username, target_playlist_uri, track_list_to_be_deleted)
-
-target_playlist_tracks
-
-#remove_duplicate_songs(username, target_playlist)
-{'uri': 'spotify:track:70o9lZxBe86XLvQCywNdJ9', 'positions': [8]}
-
-
-
-# target_playlist_tracks['items'][0]['track']['uri']
 
 
 
