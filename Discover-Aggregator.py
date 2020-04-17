@@ -63,10 +63,10 @@ playlists = sp.user_playlists(username, limit = 50, offset=0)
 
 
 #find saved songs
-liked_songs = sp.current_user_saved_tracks(limit=50)
+liked_songs = sp.current_user_saved_tracks(limit = 50)
 
 
-#Collect recent songs
+#format date to find recently liked songs
 def convert_spotify_date(dte):
     return datetime.datetime.strptime(dte,"%Y-%m-%dT%H:%M:%SZ")
 
@@ -77,6 +77,9 @@ fall_start = datetime.datetime.strptime(str(year)+'-09-01T00:00:00Z',"%Y-%m-%dT%
 winter_start = datetime.datetime.strptime(str(year)+'-12-01T00:00:00Z',"%Y-%m-%dT%H:%M:%SZ")
 last_winter_start = datetime.datetime.strptime(str(year-1)+'-12-01T00:00:00Z',"%Y-%m-%dT%H:%M:%SZ")
 
+
+
+#Collect recent songs
 song_collection = []
 
 for i in range(0, len(liked_songs['items'])):
@@ -105,8 +108,8 @@ for i in range(0, len(target_playlist_tracks['items'])):
 
 
 ###########################
-### I don't really need to remove the duplicates. I just need to make sure that I add the correct ones. 
-### I can do this through the 'in' feature of python
+###make sure that I add the correct ones. 
+### 
 
 songs_to_add = [i for i in song_collection if i not in listof_target_playlist_tracks]
 
@@ -118,10 +121,10 @@ songs_to_add = [i for i in song_collection if i not in listof_target_playlist_tr
 #Add collection to playlist
 if len(songs_to_add) > 0:
     sp.user_playlist_add_tracks(username, target_playlist_uri, songs_to_add)     # It worked!
-    print('added: '.join(songs_to_add))
+    print("Time is: " + str(datetime.datetime.now()) + ', added --- ' + str(songs_to_add))
     
 else:
-    print("Added no songs")
+    print("Time is: "+ str(datetime.datetime.now()) + ' --- added no songs')
 
 
 
