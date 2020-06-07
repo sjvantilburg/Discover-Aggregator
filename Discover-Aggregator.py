@@ -1,16 +1,10 @@
 
 """
 Steps to write this program
-
 1. Connect to the Spotify client
-
 2. Find my saved songs
-
 3. Find target playlist
-
 4. move the most recently liked songs to the discovered 2020 playlist
-
-
 """
 
 #####
@@ -39,7 +33,11 @@ redirect_uri = 'http://localhost:8888'
 client_credentials_manager = SpotifyClientCredentials(clientID,clientsecret)
 spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-scope = 'user-modify-playback-state user-read-playback-state user-read-currently-playing user-top-read user-read-recently-played user-library-modify user-library-read user-follow-modify user-follow-read playlist-read-private playlist-modify-public playlist-modify-private playlist-read-collaborative user-read-private user-read-email app-remote-control'
+scope = 'user-modify-playback-state user-read-playback-state user-read-currently-playing user-top-read ' \
+        'user-read-recently-played user-library-modify user-library-read user-follow-modify user-follow-read ' \
+        'playlist-read-private playlist-modify-public playlist-modify-private playlist-read-collaborative ' \
+        'user-read-private user-read-email app-remote-control'
+
 token = spotipy.util.prompt_for_user_token(username,
                            scope,
                            clientID,
@@ -51,8 +49,6 @@ if token:
     sp = spotipy.Spotify(auth=token)
 else:
     print("Can't get token for", username)
-
-
 
 #####################################################################################
 '''
@@ -70,14 +66,29 @@ liked_songs = sp.current_user_saved_tracks(limit = 50)
 def convert_spotify_date(dte):
     return datetime.datetime.strptime(dte,"%Y-%m-%dT%H:%M:%SZ")
 
-year = datetime.datetime.now().year
+
+date = datetime.datetime.now()
+year = date.year
 spring_start = datetime.datetime.strptime(str(year)+'-03-01T00:00:00Z',"%Y-%m-%dT%H:%M:%SZ")
 summer_start = datetime.datetime.strptime(str(year)+'-06-01T00:00:00Z',"%Y-%m-%dT%H:%M:%SZ")
 fall_start = datetime.datetime.strptime(str(year)+'-09-01T00:00:00Z',"%Y-%m-%dT%H:%M:%SZ")
 winter_start = datetime.datetime.strptime(str(year)+'-12-01T00:00:00Z',"%Y-%m-%dT%H:%M:%SZ")
 last_winter_start = datetime.datetime.strptime(str(year-1)+'-12-01T00:00:00Z',"%Y-%m-%dT%H:%M:%SZ")
 
+seasons = [('winter', (datetime.date(year,  1,  1),  datetime.date(year,  3, 20))),
+           ('spring', (datetime.date(year,  3, 21),  datetime.date(year,  6, 20))),
+           ('summer', (datetime.date(year,  6, 21),  datetime.date(year,  9, 22))),
+           ('autumn', (datetime.date(year,  9, 23),  datetime.date(year, 12, 20))),
+           ('winter', (datetime.date(year, 12, 21),  datetime.date(year, 12, 31)))]
 
+
+#####
+#def get_season(now):
+#    return next(season for season, (start, end) in seasons
+#                if start <= now <= end)
+#
+#print(get_season(datetime.date.today()))
+#####
 
 #Collect recent songs
 song_collection = []
@@ -112,8 +123,6 @@ for i in range(0, len(target_playlist_tracks['items'])):
 ### 
 
 songs_to_add = [i for i in song_collection if i not in listof_target_playlist_tracks]
-
-
 
 #####################################################################################
 ''' 4. Add new songs to playlist '''
