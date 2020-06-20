@@ -102,7 +102,7 @@ for i in range(0, len(liked_songs['items'])):
 
 
 #target playlist to add songs into
-target_playlist_name = 'Spring 2020'
+target_playlist_name = 'Summer 2020'
 target_playlist_uri = ''
 
 #get target playlist uri
