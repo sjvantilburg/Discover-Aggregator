@@ -94,7 +94,7 @@ seasons = [('winter', (datetime.date(year,  1,  1),  datetime.date(year,  3, 20)
 song_collection = []
 
 for i in range(0, len(liked_songs['items'])):
-    if (convert_spotify_date(liked_songs['items'][i]['added_at']).date() > spring_start.date()):
+    if (convert_spotify_date(liked_songs['items'][i]['added_at']).date() > fall_start.date()):
         song_collection.append(liked_songs['items'][i]['track']['uri'])
 
 ####################################################################################
@@ -102,7 +102,7 @@ for i in range(0, len(liked_songs['items'])):
 
 
 #target playlist to add songs into
-target_playlist_name = 'Summer 2020'
+target_playlist_name = 'Fall 2020'
 target_playlist_uri = ''
 
 #get target playlist uri
